@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendContactEmail } from '@/src/lib/email';
+import dbConnect from '@/src/lib/mongodb';
+import ContactMessage from '@/src/models/ContactMessage';
 
 export async function POST(request: NextRequest) {
     try {
-        const data = await request.json();
+        await dbConnect();
 
-        const { name, email, phone, message } = data;
+        const { name, email, phone, message } = await request.json();
 
         // Validate required fields
         if (!name || !email || !message) {
@@ -15,26 +16,45 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return NextResponse.json(
-                { error: 'Invalid email format' },
-                { status: 400 }
-            );
-        }
-
-        // Send email
-        await sendContactEmail({ name, email, phone, message });
+        // Save message to database
+        const contactMessage = await ContactMessage.create({
+            name,
+            email,
+            phone: phone || '',
+            message,
+            read: false,
+        });
 
         return NextResponse.json({
             success: true,
-            message: 'Your message has been sent successfully!',
+            message: 'Message received successfully',
+            data: contactMessage,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Contact form error:', error);
         return NextResponse.json(
-            { error: 'Failed to send message. Please try again later.' },
+            { error: error.message || 'Failed to send message' },
+            { status: 500 }
+        );
+    }
+}
+
+// GET all messages (admin only)
+export async function GET(request: NextRequest) {
+    try {
+        await dbConnect();
+
+        const messages = await ContactMessage.find({})
+            .sort({ createdAt: -1 });
+
+        return NextResponse.json({
+            success: true,
+            data: messages,
+        });
+    } catch (error: any) {
+        console.error('Get messages error:', error);
+        return NextResponse.json(
+            { error: error.message || 'Failed to fetch messages' },
             { status: 500 }
         );
     }

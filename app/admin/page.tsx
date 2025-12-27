@@ -103,10 +103,12 @@ export default function AdminDashboard() {
                             <div className="font-medium">Hospital Settings</div>
                             <div className="text-xs mt-1">Coming Soon</div>
                         </button>
-                        <button className="bg-orange-600 text-white p-4 rounded-lg hover:bg-orange-700 transition-colors opacity-50 cursor-not-allowed">
+                        <button
+                            onClick={() => router.push('/admin/messages')}
+                            className="bg-orange-600 text-white p-4 rounded-lg hover:bg-orange-700 transition-colors"
+                        >
                             <div className="text-2xl mb-2">📧</div>
                             <div className="font-medium">Messages</div>
-                            <div className="text-xs mt-1">Coming Soon</div>
                         </button>
                     </div>
                 </div>
