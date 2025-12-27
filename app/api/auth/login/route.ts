@@ -19,17 +19,25 @@ export async function POST(request: NextRequest) {
         // Find admin by username
         const admin = await Admin.findOne({ username: username.toLowerCase() });
 
+        console.log('Login attempt:', { username: username.toLowerCase(), adminFound: !!admin });
+
         if (!admin) {
+            console.log('Admin not found in database');
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }
             );
         }
 
+        console.log('Admin found, comparing password...');
+
         // Compare password
         const isMatch = await admin.comparePassword(password);
 
+        console.log('Password match result:', isMatch);
+
         if (!isMatch) {
+            console.log('Password mismatch');
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }
