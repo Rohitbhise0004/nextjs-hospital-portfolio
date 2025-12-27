@@ -40,17 +40,18 @@ const DoctorSchema = new Schema<IDoctor>(
         },
         experience: {
             type: Number,
-            required: [true, 'Experience is required'],
-            min: 0,
+            default: 0,
         },
         email: {
             type: String,
             trim: true,
             lowercase: true,
+            default: '',
         },
         phone: {
             type: String,
             trim: true,
+            default: '',
         },
     },
     {
