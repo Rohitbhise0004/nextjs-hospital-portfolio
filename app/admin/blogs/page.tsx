@@ -12,6 +12,7 @@ interface Blog {
     published: boolean;
     publishDate: string;
     tags: string[];
+    imageUrl?: string;
 }
 
 export default function ManageBlogs() {
@@ -73,7 +74,7 @@ export default function ManageBlogs() {
             if (res.ok) {
                 setShowForm(false);
                 setEditingId(null);
-                setFormData({ title: '', content: '', author: 'Admin', published: false, tags: '' });
+                setFormData({ title: '', content: '', author: 'Admin', published: false, tags: '', imageUrl: '' });
                 fetchBlogs();
             }
         } catch (error) {
@@ -88,6 +89,7 @@ export default function ManageBlogs() {
             author: blog.author,
             published: blog.published,
             tags: blog.tags.join(', '),
+            imageUrl: blog.imageUrl || '',
         });
         setEditingId(blog._id);
         setShowForm(true);
@@ -126,7 +128,7 @@ export default function ManageBlogs() {
                             onClick={() => {
                                 setShowForm(true);
                                 setEditingId(null);
-                                setFormData({ title: '', content: '', author: 'Admin', published: false, tags: '' });
+                                setFormData({ title: '', content: '', author: 'Admin', published: false, tags: '', imageUrl: '' });
                             }}
                             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
                         >
